@@ -1,7 +1,7 @@
 const Advertisement = () => {
   return (
-    <div>
-      <span>광고 영역이에요.</span>
+    <div className="h-[400px] border">
+      <img src="#" alt="광고이미지" />
     </div>
   );
 };

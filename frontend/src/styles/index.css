@@ -22,3 +22,29 @@ button {
   border: none;
   background: none;
 }
+
+/* 모바일 터치 최적화 */
+@media (max-width: 768px) {
+  /* 터치 타겟 최소 크기 보장 (44px) */
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 터치 피드백 */
+  button:active,
+  a:active {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+
+  /* 스크롤 부드럽게 */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
