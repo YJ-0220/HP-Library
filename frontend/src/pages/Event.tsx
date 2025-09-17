@@ -1,6 +1,6 @@
 const Event = () => {
   return (
-    <div>
+    <div className="">
       <span>이벤트 페이지입니다.</span>
     </div>
   );

@@ -17,8 +17,8 @@ const BottomNav = () => {
   }
 
   return (
-    <nav className="w-full bg-white border-t border-gray-200 px-4 py-2 mt-auto">
-      <div className="flex justify-around items-center">
+    <nav className="sm:hidden w-full bg-white border-t border-gray-200 px-4 py-2">
+      <div className="flex justify-between items-center">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (

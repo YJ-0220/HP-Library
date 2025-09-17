@@ -3,6 +3,7 @@ import Advertisement from "../Advertisement";
 import Header from "./Header";
 import GlobalNav from "./GlobalNav";
 import BottomNav from "./BottomNav";
+import Footer from "./Footer";
 
 const Layout = () => {
   return (
@@ -16,13 +17,19 @@ const Layout = () => {
           </div>
         </div>
 
-        {/* 메인 콘텐츠 영역 */}
         <div className="w-full max-w-[600px] min-h-screen bg-white shadow-md">
+          {/* 헤더 영역 & 글로벌 네비게이션 영역 */}
           <Header />
           <GlobalNav />
-          <div className="min-h-screen pb-safe-area-inset-bottom px-4 bg-gray-200">
-            <Outlet />
+
+          {/* 메인 콘텐츠 영역 & 푸터 영역 */}
+          <div className="min-h-screen bg-white flex flex-col">
+            <div className="flex-1">
+              <Outlet />
+            </div>
+            <Footer />
           </div>
+
           {/* 모바일 하단 네비게이션 */}
           <div className="sticky bottom-0">
             <BottomNav />
