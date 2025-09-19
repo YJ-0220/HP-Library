@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-import { Home, Login, Community, Event, Qna, About } from "@/pages/index";
+import { Home, Login, Community, Event, Qna, About, MeetingDetail } from "@/pages/index";
 import Layout from "@/components/layout/Layout";
 
 export default createBrowserRouter([
@@ -13,6 +13,7 @@ export default createBrowserRouter([
       { path: "event", element: <Event /> },
       { path: "qna", element: <Qna /> },
       { path: "about", element: <About /> },
+      { path: "meeting/:id", element: <MeetingDetail /> },
     ],
   },
 ]);
