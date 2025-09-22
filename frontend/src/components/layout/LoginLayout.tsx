@@ -27,7 +27,7 @@ const LoginLayout = () => {
           </button>
 
           {/* 메인 콘텐츠 영역 & 푸터 영역 */}
-          <div className="bg-white flex flex-col flex-1">
+          <div className="h-full bg-white flex flex-col flex-1">
             <Outlet />
           </div>
         </div>

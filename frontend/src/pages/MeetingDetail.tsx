@@ -45,7 +45,8 @@ const MeetingDetail = () => {
         "1": {
           id: 1,
           title: "2024 상반기 간담회",
-          description: "올해 상반기 성과 공유 및 하반기 계획 논의를 위한 간담회입니다. 의료진 여러분의 소중한 의견을 듣고자 합니다.",
+          description:
+            "올해 상반기 성과 공유 및 하반기 계획 논의를 위한 간담회입니다. 의료진 여러분의 소중한 의견을 듣고자 합니다.",
           date: "2024-03-15",
           time: "14:00",
           location: "강남구 회의실",
@@ -64,38 +65,13 @@ const MeetingDetail = () => {
             "의료진 의견 수렴",
             "하반기 계획 발표",
             "질의응답 및 토론",
-            "폐회사"
+            "폐회사",
           ],
           requirements: "의료진 자격증 또는 관련 업무 증명서",
           benefits: "참가증명서 발급, 네트워킹 기회 제공, 간단한 다과 제공",
-          notes: "주차 공간이 제한되어 있으니 대중교통을 이용해 주시기 바랍니다."
+          notes:
+            "주차 공간이 제한되어 있으니 대중교통을 이용해 주시기 바랍니다.",
         },
-        "2": {
-          id: 2,
-          title: "부산 지역 간담회",
-          description: "부산 지역 의료진과의 네트워킹 모임",
-          date: "2024-04-20",
-          time: "15:30",
-          location: "부산 센텀시티",
-          city: "부산",
-          address: "부산시 해운대구 센텀중앙로 456",
-          maxParticipants: 30,
-          currentParticipants: 18,
-          isCompleted: false,
-          registrationDeadline: "2024-04-15",
-          createdAt: new Date().toISOString(),
-          organizer: "HP-Library 부산지부",
-          contact: "051-987-6543",
-          agenda: [
-            "지역 의료진 소개",
-            "부산 지역 의료 현황 공유",
-            "협력 방안 논의",
-            "자유 토론"
-          ],
-          requirements: "부산 지역 근무 의료진",
-          benefits: "지역 의료진 네트워킹, 지역 특산품 증정",
-          notes: "센텀시티역 3번 출구에서 도보 5분 거리입니다."
-        }
       };
 
       const meetingData = dummyMeetings[meetingId];
@@ -127,15 +103,19 @@ const MeetingDetail = () => {
     try {
       // TODO: 실제 API 호출로 교체
       // await fetch(`/api/meetings/${meeting.id}/register`, { method: 'POST' });
-      
+
       // 임시 성공 처리
       alert("참가 신청이 완료되었습니다!");
-      
+
       // 참가자 수 업데이트
-      setMeeting(prev => prev ? {
-        ...prev,
-        currentParticipants: prev.currentParticipants + 1
-      } : null);
+      setMeeting((prev) =>
+        prev
+          ? {
+              ...prev,
+              currentParticipants: prev.currentParticipants + 1,
+            }
+          : null
+      );
     } catch (error) {
       console.error("참가 신청 오류:", error);
       alert("참가 신청 중 오류가 발생했습니다. 다시 시도해 주세요.");
@@ -188,7 +168,8 @@ const MeetingDetail = () => {
     );
   }
 
-  const isRegistrationOpen = !meeting.isCompleted && 
+  const isRegistrationOpen =
+    !meeting.isCompleted &&
     new Date() <= new Date(meeting.registrationDeadline);
 
   return (
@@ -213,15 +194,21 @@ const MeetingDetail = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-100">
                 <div className="flex items-center gap-2">
                   <span>📅</span>
-                  <span>{formatDate(meeting.date)} {formatTime(meeting.time)}</span>
+                  <span>
+                    {formatDate(meeting.date)} {formatTime(meeting.time)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>📍</span>
-                  <span>{meeting.location} ({meeting.city})</span>
+                  <span>
+                    {meeting.location} ({meeting.city})
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>👥</span>
-                  <span>{meeting.currentParticipants}/{meeting.maxParticipants}명</span>
+                  <span>
+                    {meeting.currentParticipants}/{meeting.maxParticipants}명
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span>⏰</span>
@@ -229,14 +216,16 @@ const MeetingDetail = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="ml-6">
-              <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                meeting.isCompleted 
-                  ? 'bg-gray-100 text-gray-800'
-                  : 'bg-green-100 text-green-800'
-              }`}>
-                {meeting.isCompleted ? '완료' : '진행예정'}
+              <span
+                className={`px-4 py-2 rounded-full text-sm font-medium ${
+                  meeting.isCompleted
+                    ? "bg-gray-100 text-gray-800"
+                    : "bg-green-100 text-green-800"
+                }`}
+              >
+                {meeting.isCompleted ? "완료" : "진행예정"}
               </span>
             </div>
           </div>
@@ -246,7 +235,9 @@ const MeetingDetail = () => {
         <div className="p-8 space-y-8">
           {/* 설명 */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">상담회 소개</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              상담회 소개
+            </h2>
             <p className="text-gray-600 leading-relaxed text-lg">
               {meeting.description}
             </p>
@@ -255,7 +246,9 @@ const MeetingDetail = () => {
           {/* 일정 */}
           {meeting.agenda && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">상담회 일정</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                상담회 일정
+              </h2>
               <div className="bg-gray-50 rounded-lg p-6">
                 <ul className="space-y-3">
                   {meeting.agenda.map((item, index) => (
@@ -274,11 +267,15 @@ const MeetingDetail = () => {
           {/* 상세 정보 */}
           <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-800 mb-4">참가 요건</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                참가 요건
+              </h3>
               <p className="text-gray-600">{meeting.requirements}</p>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-800 mb-4">참가 혜택</h3>
+              <h3 className="text-xl font-bold text-gray-800 mb-4">
+                참가 혜택
+              </h3>
               <p className="text-gray-600">{meeting.benefits}</p>
             </div>
           </section>
@@ -295,7 +292,8 @@ const MeetingDetail = () => {
                 <div>
                   <h4 className="font-semibold text-gray-800 mb-2">문의</h4>
                   <p className="text-gray-600">
-                    주최: {meeting.organizer}<br />
+                    주최: {meeting.organizer}
+                    <br />
                     연락처: {meeting.contact}
                   </p>
                 </div>
@@ -306,7 +304,9 @@ const MeetingDetail = () => {
           {/* 주의사항 */}
           {meeting.notes && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">주의사항</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+                주의사항
+              </h2>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
                 <p className="text-yellow-800">{meeting.notes}</p>
               </div>
@@ -322,22 +322,28 @@ const MeetingDetail = () => {
                     참가 신청
                   </h3>
                   <p className="text-gray-600 mb-6">
-                    현재 {meeting.currentParticipants}명이 신청했습니다. 
-                    (정원: {meeting.maxParticipants}명)
+                    현재 {meeting.currentParticipants}명이 신청했습니다. (정원:{" "}
+                    {meeting.maxParticipants}명)
                   </p>
                   <button
                     onClick={handleRegistration}
-                    disabled={isRegistering || meeting.currentParticipants >= meeting.maxParticipants}
+                    disabled={
+                      isRegistering ||
+                      meeting.currentParticipants >= meeting.maxParticipants
+                    }
                     className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
                       meeting.currentParticipants >= meeting.maxParticipants
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : isRegistering
-                        ? 'bg-blue-400 text-white cursor-wait'
-                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                        ? "bg-blue-400 text-white cursor-wait"
+                        : "bg-blue-500 text-white hover:bg-blue-600"
                     }`}
                   >
-                    {isRegistering ? '신청 중...' : 
-                     meeting.currentParticipants >= meeting.maxParticipants ? '정원 마감' : '참가 신청하기'}
+                    {isRegistering
+                      ? "신청 중..."
+                      : meeting.currentParticipants >= meeting.maxParticipants
+                      ? "정원 마감"
+                      : "참가 신청하기"}
                   </button>
                 </div>
               ) : (

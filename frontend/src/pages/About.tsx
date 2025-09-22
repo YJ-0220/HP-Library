@@ -61,6 +61,27 @@ const About = () => {
       // const data = await response.json();
       // setMeetings(data);
       // setFilteredMeetings(data);
+
+      const dummyMeetings: MeetingData[] = [
+        {
+          id: 1,
+          title: "2024 상반기 간담회",
+          description:
+            "올해 상반기 성과 공유 및 하반기 계획 논의를 위한 간담회입니다. 의료진 여러분의 소중한 의견을 듣고자 합니다.",
+          date: "2024-03-15",
+          time: "14:00",
+          location: "강남구 회의실",
+          city: "서울",
+          address: "서울시 강남구 테헤란로 123",
+          maxParticipants: 50,
+          currentParticipants: 35,
+          isCompleted: true,
+          registrationDeadline: "2024-03-10",
+          createdAt: new Date().toISOString(),
+        },
+      ];
+      _setMeetings(dummyMeetings);
+      setFilteredMeetings(dummyMeetings);
     } catch (error) {
       console.error("상담회 데이터 로딩 오류:", error);
     } finally {
@@ -77,21 +98,6 @@ const About = () => {
       filtered = filtered.filter((meeting) => meeting.city === filters.city);
     }
 
-    // 날짜 범위 필터
-    const today = new Date();
-    if (filters.dateRange === "upcoming") {
-      filtered = filtered.filter((meeting) => new Date(meeting.date) >= today);
-    } else if (filters.dateRange === "completed") {
-      filtered = filtered.filter((meeting) => new Date(meeting.date) < today);
-    }
-
-    // 특정 날짜 필터
-    if (filters.selectedDate) {
-      filtered = filtered.filter(
-        (meeting) => meeting.date === filters.selectedDate
-      );
-    }
-
     setFilteredMeetings(filtered);
   };
 
@@ -105,22 +111,6 @@ const About = () => {
   useEffect(() => {
     fetchMeetings();
   }, []);
-
-  // 날짜 포맷팅
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("ko-KR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      weekday: "short",
-    });
-  };
-
-  // 시간 포맷팅
-  const formatTime = (timeString: string) => {
-    return timeString;
-  };
 
   // 필터 리셋
   const resetFilters = () => {
@@ -206,21 +196,6 @@ const About = () => {
               <option value="completed">완료</option>
             </select>
 
-            {/* 특정 날짜 필터 */}
-            <input
-              name="selectedDate"
-              type="date"
-              value={filters.selectedDate}
-              onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  selectedDate: e.target.value,
-                }))
-              }
-              className="text-sm p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-              placeholder="특정 날짜"
-            />
-
             {/* 필터 리셋 버튼 */}
             <button
               onClick={resetFilters}
@@ -291,30 +266,6 @@ const About = () => {
                         <p className="text-gray-600 mb-4 leading-relaxed">
                           {meeting.description}
                         </p>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">📅 날짜:</span>
-                            <span>{formatDate(meeting.date)}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">⏰ 시간:</span>
-                            <span>{formatTime(meeting.time)}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">📍 장소:</span>
-                            <span>
-                              {meeting.location} ({meeting.city})
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">👥 참가자:</span>
-                            <span>
-                              {meeting.currentParticipants}/
-                              {meeting.maxParticipants}명
-                            </span>
-                          </div>
-                        </div>
                       </div>
 
                       {!meeting.isCompleted && (
@@ -322,9 +273,6 @@ const About = () => {
                           <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
                             자세히 보기 →
                           </span>
-                          <p className="text-xs text-gray-500">
-                            마감: {formatDate(meeting.registrationDeadline)}
-                          </p>
                         </div>
                       )}
                     </div>
