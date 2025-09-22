@@ -175,13 +175,13 @@ const MeetingDetail = () => {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center py-20">
           <h1 className="text-2xl font-bold text-gray-800 mb-4">
-            간담회를 찾을 수 없습니다
+            상담회를 찾을 수 없습니다
           </h1>
           <Link
             to="/about"
             className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
-            간담회 목록으로 돌아가기
+            상담회 목록으로 돌아가기
           </Link>
         </div>
       </div>
@@ -199,7 +199,7 @@ const MeetingDetail = () => {
           to="/about"
           className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
         >
-          ← 간담회 목록으로 돌아가기
+          ← 상담회 목록으로 돌아가기
         </Link>
       </div>
 
@@ -246,7 +246,7 @@ const MeetingDetail = () => {
         <div className="p-8 space-y-8">
           {/* 설명 */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">간담회 소개</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">상담회 소개</h2>
             <p className="text-gray-600 leading-relaxed text-lg">
               {meeting.description}
             </p>
@@ -255,7 +255,7 @@ const MeetingDetail = () => {
           {/* 일정 */}
           {meeting.agenda && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">프로그램 일정</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-4">상담회 일정</h2>
               <div className="bg-gray-50 rounded-lg p-6">
                 <ul className="space-y-3">
                   {meeting.agenda.map((item, index) => (

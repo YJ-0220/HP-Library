@@ -1,21 +1,6 @@
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 
-// 현재 사용 중인 배너 데이터 타입
-interface BannerData {
-  id: number;
-  title: string;
-  subtitle?: string;
-  imageUrl?: string;
-  linkUrl?: string;
-  linkType?: 'internal' | 'external';
-  bgColor: string;
-  textColor: string;
-  isActive: boolean;
-  displayOrder: number;
-  createdAt: string;
-}
-
 const BannerSlider = () => {
   const [currentSlide, setCurrentSlide] = useState(1); // 1부터 시작 (첫 번째 복제본 다음)
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -228,7 +213,8 @@ const BannerSlider = () => {
                           src={banner.imageUrl}
                           alt={banner.title}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
+                          //나중에 추가할 것
+                          onError={(_e) => {
                             console.log('이미지 로드 실패:', banner.imageUrl);
                           }}
                         />
@@ -257,7 +243,8 @@ const BannerSlider = () => {
                           src={banner.imageUrl}
                           alt={banner.title}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
+                          //나중에 추가할 것
+                          onError={(_e) => {
                             console.log('이미지 로드 실패:', banner.imageUrl);
                           }}
                         />

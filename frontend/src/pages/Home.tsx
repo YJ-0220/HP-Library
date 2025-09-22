@@ -10,7 +10,7 @@ const Home = () => {
         <div className="px-4 lg:px-8 grid grid-cols-4 gap-4">
           <Link
             to="/about"
-            className="rounded-lg hover:shadow-md transition-shadow duration-300 flex flex-col items-center"
+            className="py-4 rounded-lg hover:shadow-md transition-shadow duration-300 flex flex-col items-center"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -27,8 +27,8 @@ const Home = () => {
               />
             </svg>
 
-            <span className="w-full mt-4 flex text-xs md:text-sm text-center justify-center">
-              간담회
+            <span className="w-full mt-2 flex text-xs md:text-sm text-center justify-center">
+              상담회
             </span>
           </Link>
           <Link

@@ -19,8 +19,6 @@ body {
 
 button {
   cursor: pointer;
-  border: none;
-  background: none;
 }
 
 /* 모바일 터치 최적화 */

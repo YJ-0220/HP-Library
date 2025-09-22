@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router";
 import { Home, Login, Community, Event, Qna, About, MeetingDetail } from "@/pages/index";
 import Layout from "@/components/layout/Layout";
+import LoginLayout from "@/components/layout/LoginLayout";
 
 export default createBrowserRouter([
   {
@@ -8,7 +9,6 @@ export default createBrowserRouter([
     Component: Layout,
     children: [
       { index: true, element: <Home /> },
-      { path: "login", element: <Login /> },
       { path: "community", element: <Community /> },
       { path: "event", element: <Event /> },
       { path: "qna", element: <Qna /> },
@@ -16,4 +16,11 @@ export default createBrowserRouter([
       { path: "meeting/:id", element: <MeetingDetail /> },
     ],
   },
+  {
+    path: "/login",
+    Component: LoginLayout,
+    children: [
+      { index: true, element: <Login /> },
+    ],
+  }
 ]);
