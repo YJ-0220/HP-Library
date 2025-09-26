@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
+import BottomSheetFilter, {
+  FilterButton,
+  DesktopInlineFilter,
+  type FilterState,
+} from "../components/aboutPages/filter";
 
 // 간담회 데이터 타입
 interface MeetingData {
@@ -16,41 +21,45 @@ interface MeetingData {
   isCompleted: boolean;
   registrationDeadline: string;
   createdAt: string;
-}
-
-// 필터 상태 타입
-interface FilterState {
-  city: string;
-  dateRange: "all" | "upcoming" | "completed";
-  selectedDate: string;
+  price: number; // 상담회 가격 (원)
+  isFree?: boolean; // 무료 여부
+  imageUrl?: string; // 상담회 이미지
 }
 
 const About = () => {
-  //나중에 추가할 것
-  const [meetings, _setMeetings] = useState<MeetingData[]>([]);
+  const [meetings, _setMeetings] = useState<MeetingData[]>([]); // 나중에 추가해야할것
   const [filteredMeetings, setFilteredMeetings] = useState<MeetingData[]>([]);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
-    city: "all",
+    cities: [],
     dateRange: "all",
-    selectedDate: "",
   });
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 화면 크기 감지
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  // 가격 포맷팅 함수
+  const formatPrice = (price: number, isFree?: boolean) => {
+    if (isFree || price === 0) {
+      return "무료";
+    }
+    return `${price.toLocaleString()}원`;
+  };
 
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // 페이지당 5개씩 표시
-
-  // 도시 목록 (실제로는 API에서 가져올 수 있음)
-  const cities = [
-    "서울",
-    "부산",
-    "대구",
-    "인천",
-    "광주",
-    "대전",
-    "울산",
-    "세종",
-  ];
 
   // 상 담회 데이터 가져오기
   const fetchMeetings = async () => {
@@ -78,6 +87,129 @@ const About = () => {
           isCompleted: true,
           registrationDeadline: "2024-03-10",
           createdAt: new Date().toISOString(),
+          price: 0,
+          isFree: true,
+        },
+        {
+          id: 2,
+          title: "부산 지역 의료진 상담회",
+          description:
+            "부산 지역 의료진들과의 네트워킹 및 지역 의료 현안 논의를 위한 상담회입니다.",
+          date: "2025-01-20",
+          time: "13:30",
+          location: "부산 컨벤션센터",
+          city: "부산",
+          address: "부산시 해운대구 센텀남대로 35",
+          maxParticipants: 80,
+          currentParticipants: 25,
+          isCompleted: false,
+          registrationDeadline: "2025-01-15",
+          createdAt: new Date().toISOString(),
+          price: 50000,
+        },
+        {
+          id: 3,
+          title: "대구 상담회 - 신기술 도입",
+          description:
+            "최신 의료 기술 및 장비 도입에 관한 상담회입니다. 지역 의료진들의 의견을 수렴하고자 합니다.",
+          date: "2025-02-10",
+          time: "15:00",
+          location: "대구 메디컬센터",
+          city: "대구",
+          address: "대구시 수성구 달구벌대로 1095",
+          maxParticipants: 60,
+          currentParticipants: 15,
+          isCompleted: false,
+          registrationDeadline: "2025-02-05",
+          createdAt: new Date().toISOString(),
+          price: 75000,
+        },
+        {
+          id: 4,
+          title: "인천 지역 의료진 워크숍",
+          description:
+            "인천 지역 의료진 대상 전문성 향상을 위한 워크숍 및 상담회입니다.",
+          date: "2024-12-20",
+          time: "10:00",
+          location: "인천국제공항 컨벤션센터",
+          city: "인천",
+          address: "인천시 중구 공항로 424",
+          maxParticipants: 40,
+          currentParticipants: 40,
+          isCompleted: true,
+          registrationDeadline: "2024-12-15",
+          createdAt: new Date().toISOString(),
+          price: 120000,
+        },
+        {
+          id: 5,
+          title: "광주 의료진 포럼",
+          description:
+            "광주 지역 의료진들과의 포럼 및 상담회입니다. 지역 의료 발전 방안을 논의합니다.",
+          date: "2025-03-05",
+          time: "14:30",
+          location: "광주 컨벤션센터",
+          city: "광주",
+          address: "광주시 서구 상무중앙로 30",
+          maxParticipants: 70,
+          currentParticipants: 30,
+          isCompleted: false,
+          registrationDeadline: "2025-02-28",
+          createdAt: new Date().toISOString(),
+          price: 0,
+          isFree: true,
+        },
+        {
+          id: 6,
+          title: "대전 지역 의료진 세미나",
+          description:
+            "대전 지역 의료진 대상 최신 의료 동향 및 기술 세미나입니다. 전문가들과의 네트워킹 기회도 제공됩니다.",
+          date: "2025-03-20",
+          time: "10:00",
+          location: "대전 컨벤션센터",
+          city: "대전",
+          address: "대전시 유성구 엑스포로 107",
+          maxParticipants: 100,
+          currentParticipants: 45,
+          isCompleted: false,
+          registrationDeadline: "2025-03-15",
+          createdAt: new Date().toISOString(),
+          price: 30000,
+        },
+        {
+          id: 7,
+          title: "울산 의료진 간담회",
+          description:
+            "울산 지역 의료진들과의 소통 및 지역 의료 발전 방안 논의를 위한 간담회입니다.",
+          date: "2025-04-05",
+          time: "16:00",
+          location: "울산 시청 대회의실",
+          city: "울산",
+          address: "울산시 남구 중앙로 201",
+          maxParticipants: 50,
+          currentParticipants: 20,
+          isCompleted: false,
+          registrationDeadline: "2025-03-30",
+          createdAt: new Date().toISOString(),
+          price: 0,
+          isFree: true,
+        },
+        {
+          id: 8,
+          title: "세종 의료진 워크숍",
+          description:
+            "세종시 의료진 대상 실무 워크숍입니다. 실제 사례를 바탕으로 한 교육이 진행됩니다.",
+          date: "2025-04-15",
+          time: "09:00",
+          location: "세종 정부청사",
+          city: "세종",
+          address: "세종시 한누리대로 411",
+          maxParticipants: 30,
+          currentParticipants: 18,
+          isCompleted: false,
+          registrationDeadline: "2025-04-10",
+          createdAt: new Date().toISOString(),
+          price: 25000,
         },
       ];
       _setMeetings(dummyMeetings);
@@ -93,9 +225,25 @@ const About = () => {
   const applyFilters = () => {
     let filtered = [...meetings];
 
-    // 도시 필터
-    if (filters.city !== "all") {
-      filtered = filtered.filter((meeting) => meeting.city === filters.city);
+    // 도시 필터 (중복 선택)
+    if (filters.cities.length > 0) {
+      filtered = filtered.filter((meeting) =>
+        filters.cities.includes(meeting.city)
+      );
+    }
+
+    // 날짜 범위 필터
+    if (filters.dateRange !== "all") {
+      const now = new Date();
+      filtered = filtered.filter((meeting) => {
+        const meetingDate = new Date(meeting.date);
+        if (filters.dateRange === "upcoming") {
+          return meetingDate >= now && !meeting.isCompleted;
+        } else if (filters.dateRange === "completed") {
+          return meeting.isCompleted || meetingDate < now;
+        }
+        return true;
+      });
     }
 
     setFilteredMeetings(filtered);
@@ -115,9 +263,8 @@ const About = () => {
   // 필터 리셋
   const resetFilters = () => {
     setFilters({
-      city: "all",
+      cities: [],
       dateRange: "all",
-      selectedDate: "",
     });
     setCurrentPage(1);
   };
@@ -128,10 +275,10 @@ const About = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentMeetings = filteredMeetings.slice(startIndex, endIndex);
 
-  // 페이지 번호 배열 생성 (최대 5개 페이지 표시)
+  // 페이지 번호 배열 생성 (모바일 3개, 데스크탑 5개)
   const getPageNumbers = () => {
     const pages = [];
-    const maxPagesToShow = 5;
+    const maxPagesToShow = isMobile ? 3 : 5;
 
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
@@ -157,59 +304,24 @@ const About = () => {
       </div>
 
       <div className="space-y-8">
-        {/* 필터 섹션 - 컴팩트 버전 */}
-        <div className="bg-white rounded-lg p-4 shadow border">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-sm font-medium text-gray-700">필터:</span>
-
-            {/* 도시 필터 */}
-            <select
-              name="city"
-              value={filters.city}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, city: e.target.value }))
-              }
-              className="text-sm p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="all">전체 도시</option>
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </select>
-
-            {/* 날짜 범위 필터 */}
-            <select
-              name="dateRange"
-              value={filters.dateRange}
-              onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  dateRange: e.target.value as any,
-                }))
-              }
-              className="text-sm p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="all">전체</option>
-              <option value="upcoming">예정</option>
-              <option value="completed">완료</option>
-            </select>
-
-            {/* 필터 리셋 버튼 */}
-            <button
-              onClick={resetFilters}
-              className="text-sm px-3 py-1 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded transition-colors"
-            >
-              초기화
-            </button>
-          </div>
-        </div>
+        {/* 필터 섹션 - 조건부 렌더링 */}
+        {isMobile ? (
+          <FilterButton
+            filters={filters}
+            onFilterClick={() => setIsFilterOpen(true)}
+          />
+        ) : (
+          <DesktopInlineFilter
+            filters={filters}
+            onFiltersChange={setFilters}
+            onApplyFilters={applyFilters}
+          />
+        )}
 
         {/* 상담회 목록 */}
         <div>
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
               상담회 정보 ({filteredMeetings.length}건)
             </h2>
             {totalPages > 1 && (
@@ -246,10 +358,10 @@ const About = () => {
                     to={`/meeting/${meeting.id}`}
                     className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all border-l-4 border-blue-500 block hover:scale-[1.02] duration-200"
                   >
-                    <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
+                    <div className="flex flex-col lg:flex-col lg:justify-between lg:items-start gap-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
-                          <h3 className="text-xl font-bold text-gray-800">
+                          <h3 className="text-base sm:text-xl font-bold text-gray-800">
                             {meeting.title}
                           </h3>
                           <span
@@ -263,18 +375,105 @@ const About = () => {
                           </span>
                         </div>
 
-                        <p className="text-gray-600 mb-4 leading-relaxed">
-                          {meeting.description}
-                        </p>
+                        <div className="py-4 flex gap-4">
+                          {/* 왼쪽 영역 */}
+                          <div className="flex-shrink-0 flex flex-col justify-between w-20">
+                            {/* 상단 이미지 */}
+                            <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
+                              {meeting.imageUrl ? (
+                                <img
+                                  src={meeting.imageUrl}
+                                  alt={meeting.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center">
+                                  <svg
+                                    className="w-8 h-8 text-gray-400"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                                    />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* 오른쪽 정보 */}
+                          <div className="flex-1 text-sm text-gray-600 space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">날짜:</span>
+                              <span>{meeting.date}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">시간:</span>
+                              <span>{meeting.time}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">장소:</span>
+                              <span>{meeting.location}</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
-                      {!meeting.isCompleted && (
-                        <div className="flex flex-col items-end gap-2">
-                          <span className="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">
-                            자세히 보기 →
-                          </span>
+                      <div className="w-full flex justify-between items-end gap-2">
+                        {/* 하단 참가인원 */}
+                        <div className="text-xs text-gray-500 text-center">
+                          {meeting.isCompleted ? (
+                            <span>{meeting.currentParticipants}명 참가</span>
+                          ) : (
+                            <span>
+                              인원: {meeting.currentParticipants} /{" "}
+                              {meeting.maxParticipants}명
+                            </span>
+                          )}
                         </div>
-                      )}
+                        <div className="text-right">
+                          {meeting.isCompleted ? (
+                            // 완료된 상담회
+                            <div className="px-4 py-2 rounded-lg text-center text-sm font-medium bg-gray-100 text-gray-600">
+                              <div className="flex items-center gap-1">
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                                완료됨
+                              </div>
+                            </div>
+                          ) : (
+                            // 진행 예정인 상담회
+                            <>
+                              <div
+                                className={`px-4 py-2 rounded-lg text-center text-sm font-medium ${
+                                  meeting.isFree || meeting.price === 0
+                                    ? "bg-green-100 text-green-700"
+                                    : "bg-blue-100 text-blue-700"
+                                }`}
+                              >
+                                {formatPrice(meeting.price, meeting.isFree)}
+                              </div>
+                              <div className="mt-2 text-xs text-gray-500">
+                                참가 신청 가능
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </Link>
                 ))}
@@ -365,6 +564,17 @@ const About = () => {
           )}
         </div>
       </div>
+
+      {/* 하단 시트 필터 - 모바일에서만 */}
+      {isMobile && (
+        <BottomSheetFilter
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          filters={filters}
+          onFiltersChange={setFilters}
+          onApplyFilters={applyFilters}
+        />
+      )}
     </div>
   );
 };

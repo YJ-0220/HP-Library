@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useState, useEffect } from "react";
 
-const BannerSlider = () => {
+const EventBanner = () => {
   const [currentSlide, setCurrentSlide] = useState(1); // 1부터 시작 (첫 번째 복제본 다음)
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -287,4 +287,4 @@ const BannerSlider = () => {
   );
 };
 
-export default BannerSlider;
+export default EventBanner;

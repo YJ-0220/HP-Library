@@ -10,7 +10,7 @@ const LoginLayout = () => {
         {/* 광고 영역 */}
         <div className="w-[360px] min-h-full hidden lg:block sticky top-1/2 -translate-y-1/2 self-start">
           <Advertisement />
-          <div className="mt-5 flex items-center">
+          <div className="mt-5 items-center">
             <p>앱 다운로드 qr코드라던지 뭐 그런거 영역</p>
           </div>
         </div>
@@ -27,7 +27,7 @@ const LoginLayout = () => {
           </button>
 
           {/* 메인 콘텐츠 영역 & 푸터 영역 */}
-          <div className="h-full bg-white flex flex-col flex-1">
+          <div className="h-full bg-white flex-col flex-1">
             <Outlet />
           </div>
         </div>

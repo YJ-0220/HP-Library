@@ -8,16 +8,16 @@ import Footer from "./Footer";
 const Layout = () => {
   return (
     <div className="min-h-screen">
-      <main className="w-full mx-auto flex justify-center items-center gap-20">
+      <div className="w-full mx-auto flex justify-center items-center gap-20">
         {/* 광고 영역 */}
         <div className="w-[360px] hidden lg:block sticky top-1/2 -translate-y-1/2 self-start">
           <Advertisement />
-          <div className="mt-5 flex items-center">
+          <div className="mt-5 items-center">
             <p>앱 다운로드 qr코드라던지 뭐 그런거 영역</p>
           </div>
         </div>
 
-        <div className="w-full max-w-[600px] min-h-screen bg-white shadow-md">
+        <main className="w-full max-w-[600px] min-h-screen bg-white shadow-md">
           {/* 헤더 영역 & 글로벌 네비게이션 영역 */}
           <Header />
           <GlobalNav />
@@ -29,11 +29,11 @@ const Layout = () => {
           </div>
 
           {/* 모바일 하단 네비게이션 */}
-          <div className="w-full fixed bottom-0">
+          <div className="w-full sticky bottom-0">
             <BottomNav />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };
