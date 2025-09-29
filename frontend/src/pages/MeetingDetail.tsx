@@ -1,29 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router";
-
-// 간담회 데이터 타입 (About.tsx와 동일)
-interface MeetingData {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  city: string;
-  address: string;
-  maxParticipants: number;
-  currentParticipants: number;
-  isCompleted: boolean;
-  registrationDeadline: string;
-  createdAt: string;
-  // 상세 페이지용 추가 정보
-  organizer?: string;
-  contact?: string;
-  agenda?: string[];
-  requirements?: string;
-  benefits?: string;
-  notes?: string;
-}
+import type { MeetingData } from "../types/meeting";
+import { findMeetingById } from "../data/meetingData";
 
 const MeetingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -39,42 +17,10 @@ const MeetingDetail = () => {
       // TODO: 실제 API 호출로 교체
       // const response = await fetch(`/api/meetings/${meetingId}`);
       // const data = await response.json();
+      // setMeeting(data);
 
-      // 현재는 더미 데이터 사용 (ID에 따라 다른 데이터 반환)
-      const dummyMeetings: Record<string, MeetingData> = {
-        "1": {
-          id: 1,
-          title: "2024 상반기 간담회",
-          description:
-            "올해 상반기 성과 공유 및 하반기 계획 논의를 위한 간담회입니다. 의료진 여러분의 소중한 의견을 듣고자 합니다.",
-          date: "2024-03-15",
-          time: "14:00",
-          location: "강남구 회의실",
-          city: "서울",
-          address: "서울시 강남구 테헤란로 123",
-          maxParticipants: 50,
-          currentParticipants: 35,
-          isCompleted: true,
-          registrationDeadline: "2024-03-10",
-          createdAt: new Date().toISOString(),
-          organizer: "HP-Library 운영팀",
-          contact: "02-1234-5678",
-          agenda: [
-            "개회사 및 인사말",
-            "2024년 상반기 성과 발표",
-            "의료진 의견 수렴",
-            "하반기 계획 발표",
-            "질의응답 및 토론",
-            "폐회사",
-          ],
-          requirements: "의료진 자격증 또는 관련 업무 증명서",
-          benefits: "참가증명서 발급, 네트워킹 기회 제공, 간단한 다과 제공",
-          notes:
-            "주차 공간이 제한되어 있으니 대중교통을 이용해 주시기 바랍니다.",
-        },
-      };
-
-      const meetingData = dummyMeetings[meetingId];
+      // 현재는 더미 데이터 사용
+      const meetingData = findMeetingById(parseInt(meetingId));
       if (!meetingData) {
         throw new Error("간담회를 찾을 수 없습니다.");
       }
@@ -108,7 +54,7 @@ const MeetingDetail = () => {
       alert("참가 신청이 완료되었습니다!");
 
       // 참가자 수 업데이트
-      setMeeting((prev) =>
+      setMeeting((prev: MeetingData | null) =>
         prev
           ? {
               ...prev,
@@ -173,12 +119,12 @@ const MeetingDetail = () => {
     new Date() <= new Date(meeting.registrationDeadline);
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-4xl">
       {/* 상단 네비게이션 */}
-      <div className="mb-8">
+      <div className="mb-4 sm:mb-6 lg:mb-8">
         <Link
           to="/about"
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+          className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm sm:text-base"
         >
           ← 상담회 목록으로 돌아가기
         </Link>
@@ -187,58 +133,62 @@ const MeetingDetail = () => {
       {/* 메인 콘텐츠 */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
         {/* 헤더 */}
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-8">
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold mb-4">{meeting.title}</h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-blue-100">
-                <div className="flex items-center gap-2">
-                  <span>📅</span>
-                  <span>
-                    {formatDate(meeting.date)} {formatTime(meeting.time)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>📍</span>
-                  <span>
-                    {meeting.location} ({meeting.city})
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>👥</span>
-                  <span>
-                    {meeting.currentParticipants}/{meeting.maxParticipants}명
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>⏰</span>
-                  <span>마감: {formatDate(meeting.registrationDeadline)}</span>
-                </div>
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 sm:p-6 lg:p-8">
+          {/* 모바일: 세로 배치, 데스크탑: 가로 배치 */}
+          <div className="space-y-4">
+            {/* 제목과 상태 - 모바일에서 세로 배치 */}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold leading-tight pr-2">
+                {meeting.title}
+              </h1>
+              <div className="flex-shrink-0">
+                <span
+                  className={`inline-block px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium ${
+                    meeting.isCompleted
+                      ? "bg-gray-100 text-gray-800"
+                      : "bg-green-100 text-green-800"
+                  }`}
+                >
+                  {meeting.isCompleted ? "완료" : "진행예정"}
+                </span>
               </div>
             </div>
 
-            <div className="ml-6">
-              <span
-                className={`px-4 py-2 rounded-full text-sm font-medium ${
-                  meeting.isCompleted
-                    ? "bg-gray-100 text-gray-800"
-                    : "bg-green-100 text-green-800"
-                }`}
-              >
-                {meeting.isCompleted ? "완료" : "진행예정"}
-              </span>
+            {/* 상세 정보 - 모바일에서 세로 배치 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-blue-100 text-sm sm:text-base">
+              <div className="break-words">
+                <span className="block sm:inline">
+                  날짜: {formatDate(meeting.date)} {formatTime(meeting.time)}
+                </span>
+              </div>
+              <div className="break-words">
+                <span className="block sm:inline">
+                  📍 {meeting.city}, {meeting.location}
+                </span>
+              </div>
+              <div>
+                <span className="block sm:inline">
+                  👥 {meeting.isCompleted ? "참가" : "예약"}:{" "}
+                  {meeting.currentParticipants}/{meeting.maxParticipants}명
+                </span>
+              </div>
+              <div className="break-words">
+                <span className="block sm:inline">
+                  ⏰ 마감: {formatDate(meeting.registrationDeadline)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* 본문 */}
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
           {/* 설명 */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
               상담회 소개
             </h2>
-            <p className="text-gray-600 leading-relaxed text-lg">
+            <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg">
               {meeting.description}
             </p>
           </section>
@@ -246,57 +196,67 @@ const MeetingDetail = () => {
           {/* 일정 */}
           {meeting.agenda && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
                 상담회 일정
               </h2>
-              <div className="bg-gray-50 rounded-lg p-6">
-                <ul className="space-y-3">
-                  {meeting.agenda.map((item, index) => (
-                    <li key={index} className="flex items-start gap-3">
-                      <span className="bg-blue-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
-                        {index + 1}
-                      </span>
-                      <span className="text-gray-700">{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <ul className="space-y-2 sm:space-y-3">
+                {meeting.agenda.map((item, index) => (
+                  <li key={index} className="flex items-start gap-2 sm:gap-3">
+                    <span className="bg-blue-500 text-white w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium flex-shrink-0 mt-0.5 sm:mt-1">
+                      {index + 1}
+                    </span>
+                    <span className="text-gray-700 text-sm sm:text-base leading-relaxed">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
 
           {/* 상세 정보 */}
-          <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             <div>
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
                 참가 요건
               </h3>
-              <p className="text-gray-600">{meeting.requirements}</p>
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                {meeting.requirements}
+              </p>
             </div>
             <div>
-              <h3 className="text-xl font-bold text-gray-800 mb-4">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
                 참가 혜택
               </h3>
-              <p className="text-gray-600">{meeting.benefits}</p>
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                {meeting.benefits}
+              </p>
             </div>
           </section>
 
           {/* 장소 정보 */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">장소 정보</h2>
-            <div className="bg-gray-50 rounded-lg p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2">주소</h4>
-                  <p className="text-gray-600">{meeting.address}</p>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-800 mb-2">문의</h4>
-                  <p className="text-gray-600">
-                    주최: {meeting.organizer}
-                    <br />
-                    연락처: {meeting.contact}
-                  </p>
-                </div>
+            <h2 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
+              장소 정보
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+                  주소
+                </h4>
+                <p className="text-gray-600 text-sm sm:text-base break-words">
+                  {meeting.address}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2 text-sm sm:text-base">
+                  문의
+                </h4>
+                <p className="text-gray-600 text-sm sm:text-base break-words">
+                  주최: {meeting.organizer}
+                  <br />
+                  연락처: {meeting.contact}
+                </p>
               </div>
             </div>
           </section>
@@ -304,24 +264,26 @@ const MeetingDetail = () => {
           {/* 주의사항 */}
           {meeting.notes && (
             <section>
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              <h2 className="text-lg sm:text-xl text-center font-bold text-gray-800 mb-3 sm:mb-4">
                 주의사항
               </h2>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-                <p className="text-yellow-800">{meeting.notes}</p>
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 sm:p-6">
+                <p className="text-yellow-800 text-sm sm:text-base leading-relaxed">
+                  {meeting.notes}
+                </p>
               </div>
             </section>
           )}
 
           {/* 참가 신청 버튼 */}
           {!meeting.isCompleted && (
-            <section className="bg-gray-50 rounded-lg p-8 text-center">
+            <section className="bg-gray-50 rounded-lg p-4 sm:p-6 lg:p-8 text-center">
               {isRegistrationOpen ? (
                 <div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-3 sm:mb-4">
                     참가 신청
                   </h3>
-                  <p className="text-gray-600 mb-6">
+                  <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
                     현재 {meeting.currentParticipants}명이 신청했습니다. (정원:{" "}
                     {meeting.maxParticipants}명)
                   </p>
@@ -331,7 +293,7 @@ const MeetingDetail = () => {
                       isRegistering ||
                       meeting.currentParticipants >= meeting.maxParticipants
                     }
-                    className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
+                    className={`w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3 rounded-lg font-semibold transition-colors text-sm sm:text-base ${
                       meeting.currentParticipants >= meeting.maxParticipants
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : isRegistering
@@ -348,10 +310,10 @@ const MeetingDetail = () => {
                 </div>
               ) : (
                 <div>
-                  <h3 className="text-xl font-bold text-red-600 mb-2">
+                  <h3 className="text-lg sm:text-xl font-bold text-red-600 mb-2">
                     신청 마감
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-sm sm:text-base">
                     참가 신청 기간이 종료되었습니다.
                   </p>
                 </div>

@@ -5,26 +5,8 @@ import BottomSheetFilter, {
   DesktopInlineFilter,
   type FilterState,
 } from "../components/aboutPages/filter";
-
-// 간담회 데이터 타입
-interface MeetingData {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  location: string;
-  city: string; // 필터용 도시
-  address: string;
-  maxParticipants: number;
-  currentParticipants: number;
-  isCompleted: boolean;
-  registrationDeadline: string;
-  createdAt: string;
-  price: number; // 상담회 가격 (원)
-  isFree?: boolean; // 무료 여부
-  imageUrl?: string; // 상담회 이미지
-}
+import type { MeetingData } from "../types/meeting";
+import { dummyMeetings, formatPrice } from "../data/meetingData";
 
 const About = () => {
   const [meetings, _setMeetings] = useState<MeetingData[]>([]); // 나중에 추가해야할것
@@ -49,14 +31,6 @@ const About = () => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // 가격 포맷팅 함수
-  const formatPrice = (price: number, isFree?: boolean) => {
-    if (isFree || price === 0) {
-      return "무료";
-    }
-    return `${price.toLocaleString()}원`;
-  };
-
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5; // 페이지당 5개씩 표시
@@ -71,147 +45,7 @@ const About = () => {
       // setMeetings(data);
       // setFilteredMeetings(data);
 
-      const dummyMeetings: MeetingData[] = [
-        {
-          id: 1,
-          title: "2024 상반기 간담회",
-          description:
-            "올해 상반기 성과 공유 및 하반기 계획 논의를 위한 간담회입니다. 의료진 여러분의 소중한 의견을 듣고자 합니다.",
-          date: "2024-03-15",
-          time: "14:00",
-          location: "강남구 회의실",
-          city: "서울",
-          address: "서울시 강남구 테헤란로 123",
-          maxParticipants: 50,
-          currentParticipants: 35,
-          isCompleted: true,
-          registrationDeadline: "2024-03-10",
-          createdAt: new Date().toISOString(),
-          price: 0,
-          isFree: true,
-        },
-        {
-          id: 2,
-          title: "부산 지역 의료진 상담회",
-          description:
-            "부산 지역 의료진들과의 네트워킹 및 지역 의료 현안 논의를 위한 상담회입니다.",
-          date: "2025-01-20",
-          time: "13:30",
-          location: "부산 컨벤션센터",
-          city: "부산",
-          address: "부산시 해운대구 센텀남대로 35",
-          maxParticipants: 80,
-          currentParticipants: 25,
-          isCompleted: false,
-          registrationDeadline: "2025-01-15",
-          createdAt: new Date().toISOString(),
-          price: 50000,
-        },
-        {
-          id: 3,
-          title: "대구 상담회 - 신기술 도입",
-          description:
-            "최신 의료 기술 및 장비 도입에 관한 상담회입니다. 지역 의료진들의 의견을 수렴하고자 합니다.",
-          date: "2025-02-10",
-          time: "15:00",
-          location: "대구 메디컬센터",
-          city: "대구",
-          address: "대구시 수성구 달구벌대로 1095",
-          maxParticipants: 60,
-          currentParticipants: 15,
-          isCompleted: false,
-          registrationDeadline: "2025-02-05",
-          createdAt: new Date().toISOString(),
-          price: 75000,
-        },
-        {
-          id: 4,
-          title: "인천 지역 의료진 워크숍",
-          description:
-            "인천 지역 의료진 대상 전문성 향상을 위한 워크숍 및 상담회입니다.",
-          date: "2024-12-20",
-          time: "10:00",
-          location: "인천국제공항 컨벤션센터",
-          city: "인천",
-          address: "인천시 중구 공항로 424",
-          maxParticipants: 40,
-          currentParticipants: 40,
-          isCompleted: true,
-          registrationDeadline: "2024-12-15",
-          createdAt: new Date().toISOString(),
-          price: 120000,
-        },
-        {
-          id: 5,
-          title: "광주 의료진 포럼",
-          description:
-            "광주 지역 의료진들과의 포럼 및 상담회입니다. 지역 의료 발전 방안을 논의합니다.",
-          date: "2025-03-05",
-          time: "14:30",
-          location: "광주 컨벤션센터",
-          city: "광주",
-          address: "광주시 서구 상무중앙로 30",
-          maxParticipants: 70,
-          currentParticipants: 30,
-          isCompleted: false,
-          registrationDeadline: "2025-02-28",
-          createdAt: new Date().toISOString(),
-          price: 0,
-          isFree: true,
-        },
-        {
-          id: 6,
-          title: "대전 지역 의료진 세미나",
-          description:
-            "대전 지역 의료진 대상 최신 의료 동향 및 기술 세미나입니다. 전문가들과의 네트워킹 기회도 제공됩니다.",
-          date: "2025-03-20",
-          time: "10:00",
-          location: "대전 컨벤션센터",
-          city: "대전",
-          address: "대전시 유성구 엑스포로 107",
-          maxParticipants: 100,
-          currentParticipants: 45,
-          isCompleted: false,
-          registrationDeadline: "2025-03-15",
-          createdAt: new Date().toISOString(),
-          price: 30000,
-        },
-        {
-          id: 7,
-          title: "울산 의료진 간담회",
-          description:
-            "울산 지역 의료진들과의 소통 및 지역 의료 발전 방안 논의를 위한 간담회입니다.",
-          date: "2025-04-05",
-          time: "16:00",
-          location: "울산 시청 대회의실",
-          city: "울산",
-          address: "울산시 남구 중앙로 201",
-          maxParticipants: 50,
-          currentParticipants: 20,
-          isCompleted: false,
-          registrationDeadline: "2025-03-30",
-          createdAt: new Date().toISOString(),
-          price: 0,
-          isFree: true,
-        },
-        {
-          id: 8,
-          title: "세종 의료진 워크숍",
-          description:
-            "세종시 의료진 대상 실무 워크숍입니다. 실제 사례를 바탕으로 한 교육이 진행됩니다.",
-          date: "2025-04-15",
-          time: "09:00",
-          location: "세종 정부청사",
-          city: "세종",
-          address: "세종시 한누리대로 411",
-          maxParticipants: 30,
-          currentParticipants: 18,
-          isCompleted: false,
-          registrationDeadline: "2025-04-10",
-          createdAt: new Date().toISOString(),
-          price: 25000,
-        },
-      ];
+      // 현재는 더미 데이터 사용
       _setMeetings(dummyMeetings);
       setFilteredMeetings(dummyMeetings);
     } catch (error) {
