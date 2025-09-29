@@ -131,7 +131,7 @@ const About = () => {
     <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* 페이지 헤더 */}
       <div className="text-center mb-12">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">상담회 정보</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">상담회</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
           전국 각지에서 진행되는 의료진 상담회 정보를 확인하고 참가 신청하세요.
         </p>
@@ -210,9 +210,7 @@ const About = () => {
                         </div>
 
                         <div className="py-4 flex gap-4">
-                          {/* 왼쪽 영역 */}
                           <div className="flex-shrink-0 flex flex-col justify-between w-20">
-                            {/* 상단 이미지 */}
                             <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                               {meeting.imageUrl ? (
                                 <img
@@ -240,15 +238,15 @@ const About = () => {
                             </div>
                           </div>
 
-                          {/* 오른쪽 정보 */}
+                          {/* 상담회 간단 정보 */}
                           <div className="flex-1 text-sm text-gray-600 space-y-1">
                             <div className="flex items-center gap-2">
                               <span className="font-medium">날짜:</span>
                               <span>{meeting.date}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="font-medium">시간:</span>
-                              <span>{meeting.time}</span>
+                              <span className="font-medium">주최:</span>
+                              <span>{meeting.organizer}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <span className="font-medium">장소:</span>
@@ -259,7 +257,6 @@ const About = () => {
                       </div>
 
                       <div className="w-full flex justify-between items-end gap-2">
-                        {/* 하단 참가인원 */}
                         <div className="text-xs text-gray-500 text-center">
                           {meeting.isCompleted ? (
                             <span>{meeting.currentParticipants}명 참가</span>
@@ -272,7 +269,6 @@ const About = () => {
                         </div>
                         <div className="text-right">
                           {meeting.isCompleted ? (
-                            // 완료된 상담회
                             <div className="px-4 py-2 rounded-lg text-center text-sm font-medium bg-gray-100 text-gray-600">
                               <div className="flex items-center gap-1">
                                 <svg
@@ -290,7 +286,6 @@ const About = () => {
                               </div>
                             </div>
                           ) : (
-                            // 진행 예정인 상담회
                             <>
                               <div
                                 className={`px-4 py-2 rounded-lg text-center text-sm font-medium ${
@@ -301,9 +296,10 @@ const About = () => {
                               >
                                 {formatPrice(meeting.price, meeting.isFree)}
                               </div>
-                              <div className="mt-2 text-xs text-gray-500">
-                                참가 신청 가능
-                              </div>
+                              {/* 예약 가능성 추가 */}
+                              {/* <div className="mt-2 text-xs text-gray-500">
+                                예약 가능
+                              </div> */}
                             </>
                           )}
                         </div>

@@ -44,7 +44,7 @@ export const dummyMeetings: MeetingData[] = [
     location: "부산 컨벤션센터",
     city: "부산",
     address: "부산시 해운대구 센텀남대로 35",
-    maxParticipants: 80,
+    maxParticipants: 30,
     currentParticipants: 25,
     isCompleted: false,
     registrationDeadline: "2025-10-25",

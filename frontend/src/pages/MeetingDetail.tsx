@@ -163,18 +163,18 @@ const MeetingDetail = () => {
               </div>
               <div className="break-words">
                 <span className="block sm:inline">
-                  📍 {meeting.city}, {meeting.location}
+                  장소: {meeting.city}, {meeting.location}
                 </span>
               </div>
               <div>
                 <span className="block sm:inline">
-                  👥 {meeting.isCompleted ? "참가" : "예약"}:{" "}
+                  {meeting.isCompleted ? "참가 인원" : "예약 인원"}:{" "}
                   {meeting.currentParticipants}/{meeting.maxParticipants}명
                 </span>
               </div>
               <div className="break-words">
                 <span className="block sm:inline">
-                  ⏰ 마감: {formatDate(meeting.registrationDeadline)}
+                  마감: {formatDate(meeting.registrationDeadline)}
                 </span>
               </div>
             </div>
@@ -304,7 +304,7 @@ const MeetingDetail = () => {
                     {isRegistering
                       ? "신청 중..."
                       : meeting.currentParticipants >= meeting.maxParticipants
-                      ? "정원 마감"
+                      ? "예약이 마감되었습니다."
                       : "참가 신청하기"}
                   </button>
                 </div>
