@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 // 필터 상태 타입
 export interface FilterState {
   cities: string[]; // 중복 선택 가능한 도시 배열
-  dateRange: "all" | "upcoming" | "completed";
 }
 
 interface BottomSheetFilterProps {
@@ -45,12 +44,6 @@ const BottomSheetFilter = ({
     "제주",
   ];
 
-  // 날짜 범위 옵션
-  const dateRangeOptions = [
-    { value: "all", label: "전체" },
-    { value: "upcoming", label: "예정된 상담회" },
-    { value: "completed", label: "완료된 상담회" },
-  ];
 
   // 필터 변경 시 로컬 상태 업데이트
   useEffect(() => {
@@ -100,7 +93,6 @@ const BottomSheetFilter = ({
   const handleResetFilters = () => {
     const resetFilters: FilterState = {
       cities: [],
-      dateRange: "all",
     };
     setLocalFilters(resetFilters);
     onFiltersChange(resetFilters);
@@ -176,33 +168,6 @@ const BottomSheetFilter = ({
           {/* 필터 내용 */}
           <div className="flex-1 overflow-y-auto">
             <div className="px-6 py-4 space-y-4">
-              {/* 진행 상태 필터 - 상단에 배치 */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">
-                  진행 상태
-                </h3>
-                <div className="grid grid-cols-3 gap-2">
-                  {dateRangeOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() =>
-                        setLocalFilters((prev) => ({
-                          ...prev,
-                          dateRange: option.value as any,
-                        }))
-                      }
-                      className={`p-3 rounded-lg border-2 text-center font-medium transition-all text-sm ${
-                        localFilters.dateRange === option.value
-                          ? "border-blue-500 bg-blue-50 text-blue-700"
-                          : "border-gray-200 text-gray-700 hover:border-gray-300"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               {/* 지역 필터 - 아코디언 형태 */}
               <div className="border border-gray-200 rounded-lg">
                 <button
@@ -314,11 +279,6 @@ export const DesktopInlineFilter = ({
     "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주",
   ];
 
-  const dateRangeOptions = [
-    { value: "all", label: "전체" },
-    { value: "upcoming", label: "예정된 상담회" },
-    { value: "completed", label: "완료된 상담회" },
-  ];
 
   const handleCityChange = (city: string) => {
     const newCities = filters.cities.includes(city)
@@ -329,13 +289,8 @@ export const DesktopInlineFilter = ({
     onApplyFilters();
   };
 
-  const handleDateRangeChange = (dateRange: string) => {
-    onFiltersChange({ ...filters, dateRange: dateRange as any });
-    onApplyFilters();
-  };
-
   const resetFilters = () => {
-    onFiltersChange({ cities: [], dateRange: "all" });
+    onFiltersChange({ cities: [] });
     onApplyFilters();
   };
 
@@ -372,46 +327,23 @@ export const DesktopInlineFilter = ({
           </div>
         </div>
 
-        {/* 두 번째 줄: 진행 상태 및 리셋 */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium text-gray-700 whitespace-nowrap">상태:</span>
-          <div className="flex gap-2">
-            {dateRangeOptions.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => handleDateRangeChange(option.value)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                  filters.dateRange === option.value
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
+        {/* 두 번째 줄: 리셋 버튼 */}
+        <div className="flex items-center justify-end">
           <button
             onClick={resetFilters}
-            className="ml-auto px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-300 transition-colors"
+            className="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-300 transition-colors"
           >
             초기화
           </button>
         </div>
 
         {/* 선택된 필터 표시 */}
-        {(filters.cities.length > 0 || filters.dateRange !== "all") && (
+        {filters.cities.length > 0 && (
           <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
             <span className="text-xs text-gray-500">적용된 필터:</span>
-            {filters.cities.length > 0 && (
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
-                지역 {filters.cities.length}개
-              </span>
-            )}
-            {filters.dateRange !== "all" && (
-              <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">
-                {dateRangeOptions.find(opt => opt.value === filters.dateRange)?.label}
-              </span>
-            )}
+            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+              지역 {filters.cities.length}개
+            </span>
           </div>
         )}
       </div>
@@ -467,12 +399,7 @@ export const FilterButton = ({
                 ({filters.cities.length}개)
               </span>
             )}
-            {filters.dateRange !== "all" && (
-              <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                상태: {filters.dateRange === "upcoming" ? "예정" : "완료"}
-              </span>
-            )}
-            {filters.cities.length === 0 && filters.dateRange === "all" && (
+            {filters.cities.length === 0 && (
               <span className="text-sm text-gray-500">
                 필터가 적용되지 않음
               </span>

@@ -14,10 +14,12 @@ const About = () => {
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     cities: [],
-    dateRange: "all",
   });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // 상담회 상태 (진행중/완료) 토글을 위한 상태
+  const [showCompleted, setShowCompleted] = useState(false);
 
   // 화면 크기 감지
   useEffect(() => {
@@ -59,25 +61,20 @@ const About = () => {
   const applyFilters = () => {
     let filtered = [...meetings];
 
+    // 상담회 상태 필터 (진행중/완료) - 우선 적용
+    filtered = filtered.filter((meeting) => {
+      if (showCompleted) {
+        return meeting.isCompleted;
+      } else {
+        return !meeting.isCompleted;
+      }
+    });
+
     // 도시 필터 (중복 선택)
     if (filters.cities.length > 0) {
       filtered = filtered.filter((meeting) =>
         filters.cities.includes(meeting.city)
       );
-    }
-
-    // 날짜 범위 필터
-    if (filters.dateRange !== "all") {
-      const now = new Date();
-      filtered = filtered.filter((meeting) => {
-        const meetingDate = new Date(meeting.date);
-        if (filters.dateRange === "upcoming") {
-          return meetingDate >= now && !meeting.isCompleted;
-        } else if (filters.dateRange === "completed") {
-          return meeting.isCompleted || meetingDate < now;
-        }
-        return true;
-      });
     }
 
     setFilteredMeetings(filtered);
@@ -87,7 +84,7 @@ const About = () => {
   useEffect(() => {
     applyFilters();
     setCurrentPage(1); // 필터 변경 시 첫 페이지로 이동
-  }, [filters, meetings]);
+  }, [filters, meetings, showCompleted]);
 
   // 컴포넌트 마운트 시 데이터 로딩
   useEffect(() => {
@@ -98,7 +95,6 @@ const About = () => {
   const resetFilters = () => {
     setFilters({
       cities: [],
-      dateRange: "all",
     });
     setCurrentPage(1);
   };
@@ -137,7 +133,33 @@ const About = () => {
         </p>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-6">
+        {/* 상담회 상태 토글 버튼 */}
+        <div className="flex justify-center">
+          <div className="bg-white rounded-lg p-1 shadow border border-gray-200 inline-flex">
+            <button
+              onClick={() => setShowCompleted(false)}
+              className={`px-4 py-2 rounded-md font-medium transition-all duration-200 ${
+                !showCompleted
+                  ? "bg-blue-500 text-white shadow-sm"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              진행 중인 상담회
+            </button>
+            <button
+              onClick={() => setShowCompleted(true)}
+              className={`px-4 py-2 rounded-md font-medium transition-all duration-200 ${
+                showCompleted
+                  ? "bg-blue-500 text-white shadow-sm"
+                  : "text-gray-600 hover:text-gray-800"
+              }`}
+            >
+              완료된 상담회
+            </button>
+          </div>
+        </div>
+
         {/* 필터 섹션 - 조건부 렌더링 */}
         {isMobile ? (
           <FilterButton
