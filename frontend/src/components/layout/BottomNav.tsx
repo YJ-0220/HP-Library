@@ -5,7 +5,7 @@ const BottomNav = () => {
   
   const navItems = [
     { id: 1, name: "홈", path: "/", icon: "🏠" },
-    { id: 2, name: "소개", path: "/about", icon: "ℹ️" },
+    { id: 2, name: "게시판", path: "/about", icon: "ℹ️" },
     { id: 3, name: "커뮤니티", path: "/community", icon: "👥" },
     { id: 4, name: "이벤트", path: "/event", icon: "🎉" },
     { id: 5, name: "Q&A", path: "/qna", icon: "❓" },
